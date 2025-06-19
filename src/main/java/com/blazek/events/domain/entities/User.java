@@ -1,4 +1,4 @@
-package com.blazek.events.domain;
+package com.blazek.events.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +17,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class User {
 
     @Id

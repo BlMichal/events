@@ -1,4 +1,4 @@
-package com.blazek.events.domain;
+package com.blazek.events.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
