@@ -14,10 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(path = "/api/v1/events")
@@ -51,5 +51,19 @@ public class EventController {
                 .toList();
 
         return ResponseEntity.ok(response);
+    };
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ListEventResponseDto> getEvent(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID id
+    ){
+        UUID userId = UUID.fromString(jwt.getSubject());
+        return eventService.getEventForOrganizer(id, userId)
+                .map(event -> eventMapper.toListEventResponseDto(event))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+
+
     };
 }

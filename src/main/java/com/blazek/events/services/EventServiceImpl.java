@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -55,6 +56,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> getEventsForOrganizer(UUID organizerId) {
         return eventRepository.findByOrganizerId(organizerId) ;
+    }
+
+    @Override
+    public Optional<Event> getEventForOrganizer(UUID id, UUID organizerId) {
+        return eventRepository.findByIdAndOrganizerId(id, organizerId);
     }
 
 
