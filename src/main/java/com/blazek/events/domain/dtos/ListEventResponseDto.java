@@ -1,4 +1,4 @@
-package com.blazek.events.domain;
+package com.blazek.events.domain.dtos;
 
 import com.blazek.events.domain.entities.EventStatusEnum;
 import lombok.AllArgsConstructor;
@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateEventRequest {
+public class ListEventResponseDto {
 
+    private UUID id;
     private String name;
     private LocalDateTime eventStartDate;
     private LocalDateTime eventEndDate;
@@ -20,5 +22,7 @@ public class CreateEventRequest {
     private LocalDateTime salesStart;
     private LocalDateTime salesEnd;
     private EventStatusEnum status;
-    private List<CreateTicketTypeRequest> ticketTypes;
+    private List<ListTicketTypeResponseDto> ticketTypes;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

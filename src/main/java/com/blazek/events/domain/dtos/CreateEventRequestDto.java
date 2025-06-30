@@ -4,6 +4,7 @@ import com.blazek.events.domain.entities.EventStatusEnum;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,10 +31,10 @@ public class CreateEventRequestDto {
 
     private LocalDateTime salesEnd;
 
-    @NotBlank(message = "Status údálosti musí být uveden")
+    @NotNull(message = "Status údálosti musí být uveden")
     private EventStatusEnum status;
 
     @NotEmpty(message = "Aspoň 1 typ vstupenky musí být uveden")
     @Valid
-    private List<CreateTicketTypeRequestDto> ticketType;
+    private List<CreateTicketTypeRequestDto> ticketTypes;
 }

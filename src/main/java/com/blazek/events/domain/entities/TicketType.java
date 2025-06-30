@@ -1,5 +1,6 @@
 package com.blazek.events.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,7 +21,7 @@ import java.util.UUID;
 public class TicketType {
 
     @Id
-    @Column(name = "id", updatable = false,nullable = false)
+    @Column(name = "id", updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
@@ -35,7 +36,7 @@ public class TicketType {
 
     // Total of tickets available for event
     @Column(name = "total_available", nullable = false)
-    private int totalAvailable;
+    private Integer totalAvailable;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
@@ -45,18 +46,19 @@ public class TicketType {
     private List<Ticket> tickets;
 
     @CreatedDate
-    @Column(name = "created_at",updatable = false, nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         TicketType that = (TicketType) o;
-        return totalAvailable == that.totalAvailable && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(totalAvailable, that.totalAvailable) && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt);
     }
 
     @Override

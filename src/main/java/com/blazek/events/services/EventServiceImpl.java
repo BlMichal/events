@@ -25,26 +25,37 @@ public class EventServiceImpl implements EventService {
         User organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with ID '%s' not found", organizerId)));
 
+        Event eventToCreate = new Event();
+
+        eventToCreate.setName(event.getName());
+        eventToCreate.setEventStartDate(event.getEventStartDate());
+        eventToCreate.setEventEndDate(event.getEventEndDate());
+        eventToCreate.setEventLocation(event.getEventLocation());
+        eventToCreate.setSalesStart(event.getSalesStart());
+        eventToCreate.setSalesEnd(event.getSalesEnd());
+        eventToCreate.setStatus(event.getStatus());
+        eventToCreate.setOrganizer(organizer);
+
         List<TicketType> ticketTypesToCreate = event.getTicketTypes().stream().map(ticketType ->{
             TicketType ticketTypeToCreate = new TicketType();
             ticketTypeToCreate.setName(ticketType.getName());
             ticketTypeToCreate.setPrice(ticketType.getPrice());
             ticketTypeToCreate.setDescription(ticketType.getDescription());
             ticketTypeToCreate.setTotalAvailable(ticketType.getTotalAvailable());
+            ticketTypeToCreate.setEvent(eventToCreate);
 
             return ticketTypeToCreate;
         }).toList();
 
-        Event eventToCreate = new Event();
-        eventToCreate.setName(event.getName());
-        eventToCreate.setEventStartDate(event.getEventStartDate());
-        eventToCreate.setEventEndDate(event.getEventEndDate());
-        eventToCreate.setSalesStart(event.getSalesStart());
-        eventToCreate.setSalesEnd(event.getSalesEnd());
-        eventToCreate.setStatus(event.getStatus());
-        eventToCreate.setOrganizer(organizer);
         eventToCreate.setTicketTypes(ticketTypesToCreate);
 
         return eventRepository.save(eventToCreate);
     }
+
+    @Override
+    public List<Event> getEventsForOrganizer(UUID organizerId) {
+        return eventRepository.findByOrganizerId(organizerId) ;
+    }
+
+
 }

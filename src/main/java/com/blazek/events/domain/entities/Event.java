@@ -1,5 +1,6 @@
 package com.blazek.events.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -63,7 +64,7 @@ public class Event {
     @ManyToMany(mappedBy = "staffingEvents")
     private List<User> staff = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event",cascade = CascadeType.ALL)
     private List<TicketType> ticketTypes = new ArrayList<>();
 
     @CreatedDate
