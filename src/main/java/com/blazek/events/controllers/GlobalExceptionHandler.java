@@ -1,6 +1,10 @@
-package com.blazek.events.exceptions;
+package com.blazek.events.controllers;
 
 import com.blazek.events.domain.dtos.ErrorDto;
+import com.blazek.events.exceptions.EventNotFoundException;
+import com.blazek.events.exceptions.EventUpdateException;
+import com.blazek.events.exceptions.TicketTypeNotFoundException;
+import com.blazek.events.exceptions.UserNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -67,6 +71,30 @@ public class GlobalExceptionHandler {
         log.error("Caught exception", ex);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("User not found");
+        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleEventNotFoundException(EventNotFoundException ex){
+        log.error("Caught exception", ex);
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setError("Event not found");
+        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TicketTypeNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleTicketTypeNotFoundException(TicketTypeNotFoundException ex){
+        log.error("Caught exception", ex);
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setError("Ticket type not found");
+        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EventUpdateException.class)
+    public ResponseEntity<ErrorDto> handleUpdateEventException(EventUpdateException ex){
+        log.error("Caught exception", ex);
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setError("Unable to update event");
         return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
     }
 

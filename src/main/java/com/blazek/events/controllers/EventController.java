@@ -3,6 +3,7 @@ package com.blazek.events.controllers;
 import com.blazek.events.domain.CreateEventRequest;
 import com.blazek.events.domain.dtos.CreateEventRequestDto;
 import com.blazek.events.domain.dtos.CreateEventResponseDto;
+import com.blazek.events.domain.dtos.GetEventResponseDto;
 import com.blazek.events.domain.dtos.ListEventResponseDto;
 import com.blazek.events.domain.entities.Event;
 import com.blazek.events.mappers.EventMapper;
@@ -54,16 +55,14 @@ public class EventController {
     };
 
     @GetMapping("/{id}")
-    public ResponseEntity<ListEventResponseDto> getEvent(
+    public ResponseEntity<GetEventResponseDto> getEvent(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable UUID id
     ){
         UUID userId = UUID.fromString(jwt.getSubject());
         return eventService.getEventForOrganizer(id, userId)
-                .map(event -> eventMapper.toListEventResponseDto(event))
+                .map(event -> eventMapper.toGetEventResponseDto(event))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-
-
     };
 }

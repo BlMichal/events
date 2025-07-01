@@ -1,18 +1,21 @@
 package com.blazek.events.services;
 
 import com.blazek.events.domain.CreateEventRequest;
+import com.blazek.events.domain.UpdateEventRequest;
+import com.blazek.events.domain.UpdateTicketTypeRequest;
 import com.blazek.events.domain.entities.Event;
 import com.blazek.events.domain.entities.TicketType;
 import com.blazek.events.domain.entities.User;
+import com.blazek.events.exceptions.EventNotFoundException;
 import com.blazek.events.exceptions.UserNotFoundException;
 import com.blazek.events.repositories.EventRepository;
 import com.blazek.events.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +64,30 @@ public class EventServiceImpl implements EventService {
     @Override
     public Optional<Event> getEventForOrganizer(UUID id, UUID organizerId) {
         return eventRepository.findByIdAndOrganizerId(id, organizerId);
+    }
+
+    @Override
+    public Event updateEventForOrganizer(UUID id, UUID organizerId, UpdateEventRequest event) {
+
+        if(null == event.getId()) throw new EventNotFoundException("Event ID cannot be null");
+
+        if(!id.equals(event.getId())) throw new EventNotFoundException("Cannot update the ID of an event");
+
+        Event existingEvent = eventRepository.findByIdAndOrganizerId(id, organizerId)
+                .orElseThrow(() -> new EventNotFoundException(
+                        String.format("Event with ID '%s' does not exist", id))
+                );
+
+        existingEvent.setName(event.getName());
+        existingEvent.setEventStartDate(event.getEventStartDate());
+        existingEvent.setEventEndDate(event.getEventEndDate());
+        existingEvent.setEventLocation(event.getEventLocation());
+        existingEvent.setSalesStart(event.getSalesStart());
+        existingEvent.setSalesEnd(event.getSalesEnd());
+        existingEvent.setStatus(event.getStatus());
+
+        return eventRepository.save(existingEvent);
+
     }
 
 
