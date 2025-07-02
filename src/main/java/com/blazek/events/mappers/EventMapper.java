@@ -2,6 +2,8 @@ package com.blazek.events.mappers;
 
 import com.blazek.events.domain.CreateEventRequest;
 import com.blazek.events.domain.CreateTicketTypeRequest;
+import com.blazek.events.domain.UpdateEventRequest;
+import com.blazek.events.domain.UpdateTicketTypeRequest;
 import com.blazek.events.domain.dtos.*;
 import com.blazek.events.domain.entities.Event;
 import com.blazek.events.domain.entities.TicketType;
@@ -24,5 +26,15 @@ public interface EventMapper {
     GetEventResponseDto toGetEventResponseDto(Event event);
 
     GetTicketTypeResponseDto toGetTicketTypeResponseDto(TicketType ticketType);
+
+    UpdateTicketTypeRequest fromDto(UpdateTicketTypeRequestDto dto);
+
+    UpdateEventRequest fromDto(UpdateEventRequestDto dto);
+
+    UpdateTicketTypeResponseDto toUpdateTicketTypeResponseDto(TicketType ticketType);
+
+    UpdateEventResponseDto toUpdateEventResponseDto(Event event);
+
+    ListOfEventsResponseDto toListOfEventsResponseDto(Event event);
 
 }

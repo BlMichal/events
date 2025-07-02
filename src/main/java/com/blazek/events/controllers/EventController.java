@@ -1,15 +1,16 @@
 package com.blazek.events.controllers;
 
 import com.blazek.events.domain.CreateEventRequest;
-import com.blazek.events.domain.dtos.CreateEventRequestDto;
-import com.blazek.events.domain.dtos.CreateEventResponseDto;
-import com.blazek.events.domain.dtos.GetEventResponseDto;
-import com.blazek.events.domain.dtos.ListEventResponseDto;
+import com.blazek.events.domain.UpdateEventRequest;
+import com.blazek.events.domain.dtos.*;
 import com.blazek.events.domain.entities.Event;
+import com.blazek.events.domain.entities.EventStatusEnum;
 import com.blazek.events.mappers.EventMapper;
 import com.blazek.events.services.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,6 +41,19 @@ public class EventController {
         return new ResponseEntity<>(eventMapper.toDto(createdEvent), HttpStatus.CREATED);
    }
 
+    @PutMapping("/{eventId}")
+    public ResponseEntity<UpdateEventResponseDto> createEvent(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID eventId,
+            @Valid @RequestBody UpdateEventRequestDto updateEventRequestDto){
+        UpdateEventRequest updateEventRequest = eventMapper.fromDto(updateEventRequestDto);
+        UUID userId = UUID.fromString(jwt.getSubject());
+
+        Event updatedEvent = eventService.updateEventForOrganizer(eventId,userId,updateEventRequest);
+
+        return ResponseEntity.ok(eventMapper.toUpdateEventResponseDto(updatedEvent));
+    }
+
     @GetMapping
     public ResponseEntity<List<ListEventResponseDto>> getEvents(
             @AuthenticationPrincipal Jwt jwt
@@ -64,5 +78,28 @@ public class EventController {
                 .map(event -> eventMapper.toGetEventResponseDto(event))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    };
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEvent(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID id
+    ){
+        UUID userId = UUID.fromString(jwt.getSubject());
+        eventService.deleteEvent(id, userId);
+
+        return ResponseEntity.noContent().build();
+    };
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<Page<ListOfEventsResponseDto>> ListEvents(
+            @PathVariable EventStatusEnum status,
+            Pageable pageable
+    ){
+        Page<Event> events = eventService.listOfEvents(status, pageable);
+
+        Page<ListOfEventsResponseDto> eventResponse = events.map(event -> eventMapper.toListOfEventsResponseDto(event));
+
+        return ResponseEntity.ok(eventResponse);
     };
 }
