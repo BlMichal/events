@@ -36,10 +36,8 @@ public class UserProvisioningFilter extends OncePerRequestFilter {
 
         // We verify that the user logged in and principal is JWT token
         if(auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof Jwt jwt) {
-
             // Get subject from JWT token (Keycloak ID)
             UUID keycloakId =  UUID.fromString(jwt.getSubject());
-
             // Check if user already exists in the DB, if not, we create new user
            if(!userRepository.existsById(keycloakId)){
 
@@ -50,10 +48,8 @@ public class UserProvisioningFilter extends OncePerRequestFilter {
 
                userRepository.save(user);
            }
-
-           // Continuing to process
-           filterChain.doFilter(request,response);
-
         }
+
+        filterChain.doFilter(request,response);
     }
 }

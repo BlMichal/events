@@ -159,5 +159,14 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findByStatus(status, pageable);
     }
 
+    @Override
+    public Page<Event> searchListOfEvents(String query, Pageable pageable) {
+       return eventRepository.searchEvents(query,pageable);
+    }
+
+    @Override
+    public Optional<Event> getEvent(UUID id) {
+        return eventRepository.findById(id);
+    }
 
 }

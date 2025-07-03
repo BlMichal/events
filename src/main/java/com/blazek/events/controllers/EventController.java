@@ -91,15 +91,39 @@ public class EventController {
         return ResponseEntity.noContent().build();
     };
 
+    /**
+     * Public endpoint with no auth
+     * @param status (Enum DRAFT, PUBLISHED,...)
+     * @param pageable Pageable for sorting
+     * @return Event pages with specific status of events
+     */
     @GetMapping("/status/{status}")
-    public ResponseEntity<Page<ListOfEventsResponseDto>> ListEvents(
+    public ResponseEntity<Page<ListOfEventsResponseDto>> ListPublicEvents(
+            @RequestParam(required = false) String q,
             @PathVariable EventStatusEnum status,
             Pageable pageable
     ){
-        Page<Event> events = eventService.listOfEvents(status, pageable);
+        Page<Event> events;
+        if(q != null && !q.trim().isEmpty()) events = eventService.searchListOfEvents(q, pageable);
+        else events = eventService.listOfEvents(status, pageable);
 
         Page<ListOfEventsResponseDto> eventResponse = events.map(event -> eventMapper.toListOfEventsResponseDto(event));
 
         return ResponseEntity.ok(eventResponse);
+    };
+
+    /***
+     * Public endpoint for details info of event
+     * @param id UUID of event
+     * @return Event details
+     */
+    @GetMapping("/event-details/{id}")
+    public ResponseEntity<GetEventResponseDto> getPublicEvent(
+            @PathVariable UUID id
+    ){
+        return eventService.getEvent(id)
+                .map(event -> eventMapper.toGetEventResponseDto(event))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     };
 }

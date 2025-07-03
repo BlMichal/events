@@ -27,4 +27,9 @@ public interface EventService {
 
     Page<Event> listOfEvents(EventStatusEnum status, Pageable pageable);
 
+    Page<Event> searchListOfEvents(String query, Pageable pageable);
+
+    Optional<Event> getEvent(UUID id);
+
+
 }

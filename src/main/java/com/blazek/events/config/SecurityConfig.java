@@ -30,11 +30,11 @@ public class SecurityConfig {
     ) throws Exception {
         http
                 .authorizeHttpRequests(authorize ->
-                        // Catch all rule
+
                         authorize
-                                .requestMatchers(HttpMethod.GET,"/api/v1/events/status").permitAll()
-                                .anyRequest()
-                                .authenticated())
+                                .requestMatchers(HttpMethod.GET,"/api/v1/events/status/*","/api/v1/events/event-details/*").permitAll()
+                                // Catch all rule
+                                .anyRequest().authenticated())
                 // Disable CSRF (not needed for stateless REST APIs)
                 //Spring has CSRF protection enabled by default
                 .csrf(csrf -> csrf.disable())
