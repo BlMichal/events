@@ -38,13 +38,12 @@ services:
       - db
       - keycloak
     environment:
-      SPRING_DATASOURCE_URL=jdbc: ostgresql://db:5432/event
+      SPRING_DATASOURCE_URL=jdbc: postgresql://db:5432/event
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: major2025
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       KEYCLOAK_URL: http://keycloak:8080
     # Add other env vars like client_id, realm, etc.
 
-volumes:
   keycloak-data:
     driver: local
