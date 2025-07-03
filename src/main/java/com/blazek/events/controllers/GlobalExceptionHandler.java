@@ -1,10 +1,7 @@
 package com.blazek.events.controllers;
 
 import com.blazek.events.domain.dtos.ErrorDto;
-import com.blazek.events.exceptions.EventNotFoundException;
-import com.blazek.events.exceptions.EventUpdateException;
-import com.blazek.events.exceptions.TicketTypeNotFoundException;
-import com.blazek.events.exceptions.UserNotFoundException;
+import com.blazek.events.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -68,7 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorDto> handleUserNotFoundException(UserNotFoundException ex){
-        log.error("Caught exception", ex);
+        log.error("Caught User Not Found Exception", ex);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("User not found");
         return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
@@ -76,7 +73,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<ErrorDto> handleEventNotFoundException(EventNotFoundException ex){
-        log.error("Caught exception", ex);
+        log.error("Caught Event Not Found Exception", ex);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("Event not found");
         return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
@@ -84,7 +81,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TicketTypeNotFoundException.class)
     public ResponseEntity<ErrorDto> handleTicketTypeNotFoundException(TicketTypeNotFoundException ex){
-        log.error("Caught exception", ex);
+        log.error("Caught Ticket Type Not Found Exception", ex);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("Ticket type not found");
         return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
@@ -92,10 +89,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EventUpdateException.class)
     public ResponseEntity<ErrorDto> handleUpdateEventException(EventUpdateException ex){
-        log.error("Caught exception", ex);
+        log.error("Caught Update Event Exception", ex);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("Unable to update event");
         return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(QrCodeGeneraionException.class)
+    public ResponseEntity<ErrorDto> handleQrCodeGenerationException(QrCodeGeneraionException ex){
+        log.error("Caught Qr Code Generation Exception", ex);
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setError("Unable to generate QR code");
+        return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
