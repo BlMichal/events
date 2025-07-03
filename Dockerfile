@@ -1,14 +1,12 @@
-# Use Eclipse Temurin (Java 21) base image
-FROM eclipse-temurin:21-jdk
-
-# Set working directory
+# Stage 1: Build
+FROM maven:3.9.6-eclipse-temurin-21 as build
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Copy the built Spring Boot JAR file
-COPY target/*.jar app.jar
-
-# Expose port (optional, handled in docker-compose)
+# Stage 2: Run
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
