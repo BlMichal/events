@@ -42,7 +42,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: major2025
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/event-platform
 
 volumes:
   keycloak-data:
