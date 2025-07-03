@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:latest
@@ -8,7 +10,6 @@ services:
       - "5432:5432"
     restart: always
 
-  # Database management interface
   adminer:
     image: adminer:latest
     restart: always
@@ -19,8 +20,8 @@ services:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
     command:
-    - start-dev
-    - --db=dev-file
+      - start-dev
+      - --db=dev-file
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -29,6 +30,20 @@ services:
     volumes:
       - keycloak-data:/opt/keycloak/data
 
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - keycloak
+    environment:
+      SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/event
+      SPRING_DATASOURCE_USERNAME=postgres
+      SPRING_DATASOURCE_PASSWORD=major2025
+      SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      KEYCLOAK_URL=http://keycloak:8080
+    # Add other env vars like client_id, realm, etc.
 
 volumes:
   keycloak-data:
