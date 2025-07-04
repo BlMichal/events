@@ -38,9 +38,9 @@ services:
       - db
       - keycloak
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/event
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: major2025
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d1jtjbumcj7s73abr660-a.frankfurt-postgres.render.com:5432/event_r0xw
+      SPRING_DATASOURCE_USERNAME: event_r0xw_user
+      SPRING_DATASOURCE_PASSWORD: 1ft2lqUJSepx863hKbzJbR3GGqprLcFb
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/event-platform
 
