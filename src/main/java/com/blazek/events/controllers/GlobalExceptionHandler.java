@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
         log.error("Caught User Not Found Exception", ex);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("User not found");
-        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EventNotFoundException.class)
@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
         log.error("Caught Event Not Found Exception", ex);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("Event not found");
-        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(TicketTypeNotFoundException.class)
@@ -84,7 +84,7 @@ public class GlobalExceptionHandler {
         log.error("Caught Ticket Type Not Found Exception", ex);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("Ticket type not found");
-        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EventUpdateException.class)
@@ -101,6 +101,22 @@ public class GlobalExceptionHandler {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError("Unable to generate QR code");
         return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(QrCodeNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleQrCodeNotFoundException(QrCodeNotFoundException ex){
+        log.error("Caught Qr Code Not Found Exception", ex);
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setError("Qr code was not found");
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TicketSoldOutException.class)
+    public ResponseEntity<ErrorDto> handleTicketSoldOutException(TicketSoldOutException ex){
+        log.error("Caught Ticket Sold-Out Exception", ex);
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setError("Ticket sold out!");
+        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
     }
 
 }
