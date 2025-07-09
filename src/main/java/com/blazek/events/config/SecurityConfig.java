@@ -26,13 +26,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
-            UserProvisioningFilter userProvisioningFilter
+            UserProvisioningFilter userProvisioningFilter,
+            JwtAuthenticationConverter jwtAuthconverter
     ) throws Exception {
         http
                 .authorizeHttpRequests(authorize ->
 
                         authorize
-                                .requestMatchers(HttpMethod.GET,"/api/v1/events/status/*","/api/v1/events/event-details/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/events/status/*", "/api/v1/events/event-details/*").permitAll()
+                                .requestMatchers("api/v1/events").hasRole("ORGANIZER")
                                 // Catch all rule
                                 .anyRequest().authenticated())
                 // Disable CSRF (not needed for stateless REST APIs)
@@ -42,7 +44,9 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Enable JWT-based authentication using OAuth2 Resource Server
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(
+                        jwt -> jwt.jwtAuthenticationConverter(jwtAuthconverter)
+                        ))
                 // Register the custom user provisioning filter after JWT authentication is complete
                 .addFilterAfter(userProvisioningFilter, BearerTokenAuthenticationFilter.class);
 
