@@ -4,6 +4,7 @@ import com.blazek.events.domain.entities.QrCode;
 import com.blazek.events.domain.entities.QrCodeStatusEnum;
 import com.blazek.events.domain.entities.Ticket;
 import com.blazek.events.exceptions.QrCodeGeneraionException;
+import com.blazek.events.exceptions.QrCodeNotFoundException;
 import com.blazek.events.repositories.QrCodeRepository;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -11,6 +12,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -22,6 +24,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QrCodeServiceImpl implements QrCodeService {
 
     private static final int QR_HEIGHT = 300;
@@ -45,6 +48,19 @@ public class QrCodeServiceImpl implements QrCodeService {
 
         } catch (WriterException | IOException ex) {
             throw new QrCodeGeneraionException("Failed to generate QR Code", ex);
+        }
+    }
+
+    @Override
+    public byte[] getQrCodeImageForUserAndTicket(UUID userId, UUID ticketId) {
+        QrCode qrCode = qrCodeRepository.findByTicketIdAndTicketPurchaserId(userId, ticketId)
+                .orElseThrow(() -> new QrCodeNotFoundException());
+
+        try {
+            return Base64.getDecoder().decode(qrCode.getValue());
+        } catch (IllegalArgumentException ex){
+            log.error("Invalid base64 QR code for ticket ID: {}", ticketId,ex);
+            throw new QrCodeNotFoundException();
         }
     }
 
