@@ -5,8 +5,11 @@ import com.blazek.events.domain.dtos.ListTicketResponseDto;
 import com.blazek.events.domain.entities.Ticket;
 import com.blazek.events.exceptions.TicketNotFoundException;
 import com.blazek.events.mappers.TicketMapper;
+import com.blazek.events.services.QrCodeService;
 import com.blazek.events.services.TicketService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -26,6 +29,7 @@ public class TicketController {
 
     private final TicketService ticketService;
     private final TicketMapper ticketMapper;
+    private final QrCodeService qrCodeService;
 
     //Handles GET requests to retrieve all tickets purchased by the currently authenticated user.
     @GetMapping
@@ -53,5 +57,23 @@ public class TicketController {
                 .map(ticket -> ticketMapper.toGetTicketResponseDto(ticket))
                 .map(resp -> ResponseEntity.ok(resp))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{ticketId}/qr-code")
+    public ResponseEntity<byte[]> getTicketQrCode(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID ticketId
+    ){
+        UUID userId = UUID.fromString(jwt.getSubject());
+
+        byte[] image = qrCodeService.getQrCodeImageForUserAndTicket(userId, ticketId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        headers.setContentLength(image.length);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(image);
     }
 }
